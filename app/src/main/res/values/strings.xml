@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Tamagotchi</string>
+    <string name="fun">Szórakozottság</string>
+    <string name="hunger">Éhség</string>
+    <string name="character">character</string>
+    <string name="feed">Etetés</string>
+    <string name="entertain">Szórakoztatás</string>
 </resources>
