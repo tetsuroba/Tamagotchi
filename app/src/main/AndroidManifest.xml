@@ -19,6 +19,7 @@
 
         </activity>
         <receiver android:name=".BackgroundAlarm"></receiver>
+        <receiver android:name=".NotificationAlarm"></receiver>
 
     </application>
 
