@@ -1,29 +1,22 @@
 package com.example.tamagotchi;
 
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity
@@ -37,12 +30,15 @@ public class MainActivity extends AppCompatActivity
     ////// 6 percenként +1%
     private static int hunger;
     private static int fun;
+    
     private static int feedCooldown;
     private static int entertainCooldown;
     private static ProgressBar hungerBar;
     private static ProgressBar funBar;
     private static long lastAlarm;
     private static long missedAlarms;
+    private static TextView hungerText;
+    private static TextView funText;
 
 
     @Override
@@ -61,30 +57,44 @@ public class MainActivity extends AppCompatActivity
             this.lastAlarm = sharedPref.getLong("lastAlarm",0);
 
             missedAlarms = System.currentTimeMillis()-lastAlarm;
+            int cooldownResume = (int)missedAlarms/1000;
             Log.d("Utolsó mentés óta:","CREATION: " + Long.toString(missedAlarms));
 
-            double c = ((double)(System.currentTimeMillis()-lastAlarm)/360000);
+            double c = ((double)missedAlarms/360000);
+            Log.d("MP",String.valueOf(cooldownResume));
+
+
+
 
             Log.d("C","CREATION: " + Double.toString(c));
             Log.d("Növekedések száma:","CREATION: " + Double.toString((int)c));
 
+            Log.d("CREATOR",String.valueOf(entertainCooldown-cooldownResume));
 
+            setEntertainCooldown(entertainCooldown-cooldownResume);
+            setFeedCooldown(feedCooldown-cooldownResume);
             //final int missedIncreases = (int)c;
 
-        makeUpForMissedAlarms(0);
+        makeUpForMissedAlarms((int)c);
 
 
         this.hungerBar = findViewById(R.id.hungerBar);
         this.funBar = findViewById(R.id.funBar);
 
+        this.hungerText = findViewById(R.id.hungerText);
+        this.funText = findViewById(R.id.funText);
+
         hungerBar.setProgress(hunger);
         funBar.setProgress(fun);
+        hungerText.setText(String.valueOf(this.hunger));
+        funText.setText(String.valueOf(this.fun));
         setAlarm();
         saveData();
         setNotificationAlarm();
     }
 
     private void makeUpForMissedAlarms(final int missedIncreases) {
+
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -93,6 +103,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
     }
 
     public void setAlarm(){
@@ -122,8 +133,8 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("hunger", hunger);
         editor.putInt("fun", fun);
-        editor.putInt("feedCooldown",0);
-        editor.putInt("entertainCooldown",0);
+        editor.putInt("feedCooldown",feedCooldown);
+        editor.putInt("entertainCooldown",entertainCooldown);
         editor.putLong("lastAlarm",System.currentTimeMillis());
 
 
@@ -160,8 +171,22 @@ public class MainActivity extends AppCompatActivity
         if(fun > 0){
             fun--;
         }
+        if(feedCooldown > 0 && feedCooldown <= 360){
+            feedCooldown = 0;
+        }else if(feedCooldown > 360){
+            feedCooldown = feedCooldown - 360;
+        }
+
+        if(entertainCooldown > 0 && entertainCooldown <= 360){
+            entertainCooldown = 0;
+        }else if(entertainCooldown > 360){
+            entertainCooldown = entertainCooldown - 360;
+        }
+
         hungerBar.setProgress(hunger);
         funBar.setProgress(fun);
+        hungerText.setText(String.valueOf(hunger));
+        funText.setText(String.valueOf(fun));
         saveData();
     }
 
@@ -227,6 +252,24 @@ public class MainActivity extends AppCompatActivity
     public static void setFunBar(ProgressBar funBar) {
         MainActivity.funBar = funBar;
     }
+    public static void setFeedCooldown(int feedCooldown) {
+        if(feedCooldown < 0){
+            MainActivity.feedCooldown = 0;
+        }else{
+            MainActivity.feedCooldown = feedCooldown;
+        }
+
+    }
+
+    public static void setEntertainCooldown(int entertainCooldown) {
+        if(entertainCooldown < 0){
+            MainActivity.entertainCooldown = 0;
+        }else{
+            MainActivity.entertainCooldown = entertainCooldown;
+        }
+
+    }
+
 
     @NonNull
     @Override

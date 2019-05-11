@@ -11,6 +11,4 @@ public class BackgroundAlarm extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         MainActivity.passTime();
     }
-
-
 }

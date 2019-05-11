@@ -14,15 +14,28 @@ import android.util.Log;
 public class NotificationAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-            Log.d("CREATOR",String.valueOf(MainActivity.getHunger()));
-            createNotification(context);
+            if(MainActivity.getHunger() >= 50 && MainActivity.getFun() <= 50){
+                    createNotification(context,context.getString(R.string.notification_boredandhungry),context.getString(R.string.hunger_level)
+                            + MainActivity.getHunger()
+                            + context.getString(R.string.fun_level)
+                            + MainActivity.getFun());
+            }else if(MainActivity.getHunger() >= 50){
+                    createNotification(context,context.getString(R.string.notifcation_hungry),context.getString(R.string.hunger_level)
+                            + MainActivity.getHunger());
+            }else if(MainActivity.getFun() <= 50){
+                    createNotification(context,context.getString(R.string.notification_bored),context.getString(R.string.fun_level)
+                            + MainActivity.getFun());
+            }
+
+
+
     }
 
-    public void createNotification(Context context){
+    public void createNotification(Context context,String title,String text){
         CharSequence name = null;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            name = "custom channel";
-            String description = "ez egy pelda broadcast csatorna";
+            name = "StatusChannel";
+            String description = "Status broadcast channel";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel =
                     new NotificationChannel(name.toString(), name, importance);
@@ -39,8 +52,8 @@ public class NotificationAlarm extends BroadcastReceiver {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, (name != null ? name.toString(): null))
                         .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle("Értesítés a Mobil kurzusról")
-                        .setContentText(String.valueOf(MainActivity.getFun()))
+                        .setContentTitle(title)
+                        .setContentText(text)
                         .setContentIntent(pendingIntent)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);

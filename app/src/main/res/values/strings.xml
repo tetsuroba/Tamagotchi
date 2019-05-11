@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Tamagotchi</string>
-    <string name="fun">Szórakozottság</string>
-    <string name="hunger">Éhség</string>
     <string name="character">character</string>
-    <string name="feed">Etetés</string>
-    <string name="entertain">Szórakoztatás</string>
+    <string name="entertain">Play with</string>
+    <string name="feed">Feed</string>
+    <string name="fun">Fun</string>
+    <string name="hunger">Hunger</string>
+    <string name="notifcation_hungry">I\'m hungry, feed me!</string>
+    <string name="notification_bored">I\'m bored, play with me!</string>
+    <string name="hunger_level">Hunger status:</string>
+    <string name="fun_level">Fun status:</string>
+    <string name="notification_boredandhungry">I\'m hungry and bored!</string>
 </resources>
