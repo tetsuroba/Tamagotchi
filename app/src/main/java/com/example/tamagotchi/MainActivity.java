@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
     ////// 6 percenként +1%
     private static int hunger;
     private static int fun;
-    
+
     private static int feedCooldown;
     private static int entertainCooldown;
     private static ProgressBar hungerBar;
@@ -142,6 +142,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public static void updateUI(){
+        hungerBar.setProgress(hunger);
+        funBar.setProgress(fun);
+        hungerText.setText(String.valueOf(hunger));
+        funText.setText(String.valueOf(fun));
+    }
+
+
 
     @Override
     public void onPause() {
@@ -183,10 +191,7 @@ public class MainActivity extends AppCompatActivity
             entertainCooldown = entertainCooldown - 360;
         }
 
-        hungerBar.setProgress(hunger);
-        funBar.setProgress(fun);
-        hungerText.setText(String.valueOf(hunger));
-        funText.setText(String.valueOf(fun));
+        updateUI();
         saveData();
     }
 
@@ -200,7 +205,7 @@ public class MainActivity extends AppCompatActivity
             }else if(hunger > 10){
                 this.hunger = hunger - 10;
             }
-            hungerBar.setProgress(hunger);
+            updateUI();
             this.feedCooldown = 1800;
         }else {
 
@@ -214,7 +219,7 @@ public class MainActivity extends AppCompatActivity
             }else{
                 this.fun = fun + 10;
             }
-            funBar.setProgress(fun);
+            updateUI();
             this.entertainCooldown = 1800; //1800 mp cooldown
         }else{
 
