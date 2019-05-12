@@ -7,10 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 public class NotificationAlarm extends BroadcastReceiver {
     int storedFun;
@@ -23,9 +23,6 @@ public class NotificationAlarm extends BroadcastReceiver {
 
         storedFun = sharedPref.getInt("fun", 40);
         storedHunger = sharedPref.getInt("hunger", 60);
-
-        Log.d("CREATION2", String.valueOf(storedFun) + " " + String.valueOf(storedHunger));
-
         if (storedHunger >= 50 && storedFun <= 50) {
             createNotification(context, context.getString(R.string.notification_boredandhungry), context.getString(R.string.hunger_level)
                     + " " + storedHunger + " "
@@ -39,11 +36,9 @@ public class NotificationAlarm extends BroadcastReceiver {
                     + " " + storedFun);
         }
 
-        Log.d("HUNGER_ALARM", String.valueOf(storedFun));
     }
 
     public void createNotification(Context context, String title, String text) {
-
         CharSequence name = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             name = "StatusChannel";
@@ -63,7 +58,8 @@ public class NotificationAlarm extends BroadcastReceiver {
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, (name != null ? name.toString() : null))
-                        .setSmallIcon(R.mipmap.icon)
+                        .setSmallIcon(R.mipmap.character)
+                        .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.mipmap.icon))
                         .setContentTitle(title)
                         .setContentText(text)
                         .setContentIntent(pendingIntent)

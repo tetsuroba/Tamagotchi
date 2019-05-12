@@ -11,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,15 +29,11 @@ public class MainActivity extends AppCompatActivity
     ///// 30 perces cooldown az etetésen/szórakoztatáson
     private static int hunger;
     private static int fun;
-
-    public static boolean isOn() {
-        return on;
-    }
+    private static int feedCooldown;
+    private static int entertainCooldown;
 
     private static boolean on = false;
 
-    private static int feedCooldown;
-    private static int entertainCooldown;
     private static ProgressBar hungerBar;
     private static ProgressBar funBar;
     private static TextView hungerText;
@@ -47,24 +42,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("CREATION1", String.valueOf(fun) + " " + String.valueOf(hunger));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        this.getSupportActionBar().hide();
         sharedPref = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
 
         this.fun = sharedPref.getInt("fun", 40);
         this.hunger = sharedPref.getInt("hunger", 60);
         this.feedCooldown = sharedPref.getInt("feedCooldown", 0);
         this.entertainCooldown = sharedPref.getInt("playCooldown", 0);
-        this.on = true;
 
-        Log.d("CREATION1", String.valueOf(fun) + " " + String.valueOf(hunger));
+        this.on = true;
 
 
         this.hungerBar = findViewById(R.id.hungerBar);
         this.funBar = findViewById(R.id.funBar);
-
         this.hungerText = findViewById(R.id.hungerText);
         this.funText = findViewById(R.id.funText);
 
@@ -75,20 +67,26 @@ public class MainActivity extends AppCompatActivity
         saveData();
     }
 
+    /**
+     * A háttérben futó teendők ütemezése.
+     */
     public void setBackgroundAlarm() {
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, BackgroundAlarm.class);
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 6, alarmIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 6, 1000 * 60 * 6, alarmIntent);
     }
 
+    /**
+     *  Értesítés alarmját állítja be.
+     */
     public void setNotificationAlarm() {
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, NotificationAlarm.class);
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 30, alarmIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 30, 1000 * 60 * 30, alarmIntent);
 
     }
 
@@ -132,9 +130,10 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-
+    /**
+     * Csökkenti a szórakozottságot, növeli az éhséget.
+     */
     public static void passTime() {
-        System.out.println(hunger + " " + fun);
         if (hunger < 100) {
             hunger++;
         }
@@ -146,18 +145,13 @@ public class MainActivity extends AppCompatActivity
         } else if (feedCooldown > 360) {
             feedCooldown = feedCooldown - 360;
         }
-
         if (entertainCooldown > 0 && entertainCooldown <= 360) {
             entertainCooldown = 0;
         } else if (entertainCooldown > 360) {
             entertainCooldown = entertainCooldown - 360;
         }
-        try {
             updateUI();
             saveData();
-        } catch (Exception e) {
-            Log.e("SAVE ERROR", "passTime()");
-        }
     }
 
 
@@ -189,12 +183,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public static boolean isOn() {
+        return on;
+    }
+
     public void resetSharedPref() {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.clear();
 
         editor.commit();
     }
+
 
 
     @NonNull

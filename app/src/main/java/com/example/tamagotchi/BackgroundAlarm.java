@@ -22,9 +22,6 @@ public class BackgroundAlarm extends BroadcastReceiver {
         storedFun = sharedPref.getInt("fun", 40);
         storedHunger = sharedPref.getInt("hunger", 60);
 
-        Log.d("CREATION3", String.valueOf(storedFun) + " " + String.valueOf(storedHunger));
-
-        Log.d("PASSING TIME", "C");
         if (MainActivity.isOn()) {
             MainActivity.passTime();
         } else {
@@ -69,6 +66,4 @@ public class BackgroundAlarm extends BroadcastReceiver {
             Log.e("SAVE ERROR", "passTime()");
         }
     }
-
-
 }
