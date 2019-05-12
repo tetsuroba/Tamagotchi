@@ -10,4 +10,6 @@
     <string name="hunger_level">Hunger status:</string>
     <string name="fun_level">Fun status:</string>
     <string name="notification_boredandhungry">I\'m hungry and bored!</string>
+    <string name="tryagain">Try again</string>
+    <string name="minutes_later">minutes later.</string>
 </resources>

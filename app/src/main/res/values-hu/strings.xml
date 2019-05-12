@@ -11,4 +11,6 @@
     <string name="hunger_level">"Éhségi szint: "</string>
     <string name="fun_level">"Szórakozottsági szint: "</string>
     <string name="notification_boredandhungry">Unatkozom, és éhes vagyok!</string>
+    <string name="tryagain">Próbáld meg</string>
+    <string name="minutes_later">perc múlva.</string>
 </resources>
